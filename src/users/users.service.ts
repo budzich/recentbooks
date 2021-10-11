@@ -21,4 +21,9 @@ export class UsersService {
   async getAllUsers() {
     return await this.userRepo.find({ relations: ['roles'] });
   }
+
+  async getUserByEmail(email: string) {
+    const user = await this.userRepo.findOne({ where: { email }, relations: ['roles'] });
+    return user;
+  }
 }

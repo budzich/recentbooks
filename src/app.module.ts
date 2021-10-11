@@ -4,6 +4,7 @@ import { entities } from 'src/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
+import { AuthModule } from './auth/auth.module';
 
 console.log(process.env.NODE_ENV);
 
@@ -11,6 +12,7 @@ console.log(process.env.NODE_ENV);
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`,
+      isGlobal: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -24,6 +26,7 @@ console.log(process.env.NODE_ENV);
     }),
     UsersModule,
     RolesModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
