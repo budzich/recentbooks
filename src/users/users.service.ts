@@ -4,6 +4,7 @@ import { User } from 'src/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
+import { getAllColumns } from 'src/helpers/typeorm';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,16 @@ export class UsersService {
 
   async getUserByEmail(email: string) {
     const user = await this.userRepo.findOne({ where: { email }, relations: ['roles'] });
+    return user;
+  }
+
+  async getFullUserByEmail(email: string) {
+    const user = await this.userRepo.findOne({
+      select: getAllColumns(this.userRepo),
+      where: { email },
+      relations: ['roles'],
+    });
+    console.log(user);
     return user;
   }
 }

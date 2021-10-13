@@ -19,7 +19,7 @@ export class User {
   email: string;
 
   @ApiProperty({ example: 'asdasdA!1', description: 'User password' })
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @ManyToMany(() => Role)

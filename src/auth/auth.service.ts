@@ -9,8 +9,16 @@ export class AuthService {
   constructor(private userService: UsersService,
               private jwtService: JwtService) {}
 
-  async login(userDto: CreateUserDto) {
+  async login({ password, email }: CreateUserDto) {
+    const fullUser = await this.userService.getFullUserByEmail(email);
+    const { password: userPassword, ...user } = fullUser;
+    const isValid = await bcrypt.compare(password, userPassword);
 
+    if (!user || !isValid) {
+      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
+    }
+
+    return user;
   }
 
   async register(userDto: CreateUserDto) {
