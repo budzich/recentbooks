@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
@@ -9,16 +9,9 @@ export class AuthService {
   constructor(private userService: UsersService,
               private jwtService: JwtService) {}
 
-  async login({ password, email }: CreateUserDto) {
-    const fullUser = await this.userService.getFullUserByEmail(email);
-    const { password: userPassword, ...user } = fullUser;
-    const isValid = await bcrypt.compare(password, userPassword);
-
-    if (!user || !isValid) {
-      throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
-    }
-
-    return user;
+  async login(userDto: CreateUserDto) {
+    const user = this.validateUser(userDto);
+    return this.generateToken(user)
   }
 
   async register(userDto: CreateUserDto) {
@@ -36,5 +29,17 @@ export class AuthService {
     return {
       token: this.jwtService.sign(payload),
     };
+  }
+
+  private async validateUser({ password, email }: CreateUserDto) {
+    const fullUser = await this.userService.getUserWithPassword(email);
+    const { password: userPassword, ...user } = fullUser;
+    const isValid = await bcrypt.compare(password, userPassword);
+
+    if (user || isValid) {
+      return user;
+    }
+
+    throw new UnauthorizedException({message: 'Invalid credentials'});
   }
 }

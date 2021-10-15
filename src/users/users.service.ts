@@ -28,13 +28,11 @@ export class UsersService {
     return user;
   }
 
-  async getFullUserByEmail(email: string) {
+  async getUserWithPassword(email: string) {
     const user = await this.userRepo.findOne({
       select: getAllColumns(this.userRepo),
       where: { email },
-      relations: ['roles'],
     });
-    console.log(user);
     return user;
   }
 }
