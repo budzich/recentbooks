@@ -10,8 +10,8 @@ export class AuthService {
               private jwtService: JwtService) {}
 
   async login(userDto: CreateUserDto) {
-    const user = this.validateUser(userDto);
-    return this.generateToken(user)
+    const user = await this.validateUser(userDto);
+    return this.generateToken(user);
   }
 
   async register(userDto: CreateUserDto) {
@@ -25,7 +25,7 @@ export class AuthService {
   }
 
   async generateToken(user) {
-    const payload = { email: user.email };
+    const payload = { email: user.email, roles: user.roles };
     return {
       token: this.jwtService.sign(payload),
     };
@@ -33,13 +33,18 @@ export class AuthService {
 
   private async validateUser({ password, email }: CreateUserDto) {
     const fullUser = await this.userService.getUserWithPassword(email);
+
+    if (!fullUser) {
+      throw new UnauthorizedException({ message: 'The user not found' });
+    }
+
     const { password: userPassword, ...user } = fullUser;
     const isValid = await bcrypt.compare(password, userPassword);
 
-    if (user || isValid) {
+    if (user && isValid) {
       return user;
     }
 
-    throw new UnauthorizedException({message: 'Invalid credentials'});
+    throw new UnauthorizedException({ message: 'Invalid credentials' });
   }
 }

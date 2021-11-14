@@ -3,10 +3,11 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
-  JoinTable,
+  JoinTable, OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/typeorm/entities/Role';
+import { Book } from 'src/typeorm/entities/Book';
 
 @Entity('users')
 export class User {
@@ -22,7 +23,18 @@ export class User {
   @Column({ select: false })
   password: string;
 
+  @ApiProperty({ example: 'true', description: 'Is banned' })
+  @Column({ default: false })
+  banned: boolean;
+
+  @ApiProperty({ example: 'spam', description: 'Ban reason' })
+  @Column({ nullable: true })
+  banReason: string;
+
   @ManyToMany(() => Role)
   @JoinTable({ name: 'user_roles' })
   roles: Role[];
+
+  @OneToMany(() => Book, book => book.user)
+  books: Book[];
 }

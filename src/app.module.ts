@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { AuthModule } from './auth/auth.module';
+import { BooksModule } from './books/books.module';
 
 console.log(process.env.NODE_ENV);
 
@@ -27,6 +28,7 @@ console.log(process.env.NODE_ENV);
     UsersModule,
     RolesModule,
     AuthModule,
+    BooksModule,
   ],
 })
 export class AppModule {}
