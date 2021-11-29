@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role, User } from 'src/typeorm';
+import { User } from 'src/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { RolesService } from 'src/roles/roles.service';
@@ -16,6 +16,12 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
+    const isExists = await this.userRepo.findOne({ where: { email: dto.email } });
+
+    if (isExists) {
+      throw new HttpException('This user already exists', HttpStatus.BAD_REQUEST);
+    }
+
     const user = await this.userRepo.create(dto);
     const role = await this.rolesService.getRole('USER');
     return await this.userRepo.save({ ...user, roles: [role] });

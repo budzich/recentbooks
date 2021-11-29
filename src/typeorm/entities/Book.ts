@@ -6,10 +6,10 @@ import {
   JoinTable, ManyToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from 'src/typeorm/entities/Role';
 import { User } from 'src/typeorm/entities/User';
+import { Genre } from 'src/typeorm/entities/Genre';
 
-@Entity('book')
+@Entity('books')
 export class Book {
   @ApiProperty({ example: '1', description: 'Book id' })
   @PrimaryGeneratedColumn()
@@ -25,13 +25,13 @@ export class Book {
 
   @ApiProperty({ example: 'image.png', description: 'Book poster' })
   @Column({ default: false })
-  image: boolean;
+  image: string;
 
   @ManyToOne(() => User, user => user.books)
   @JoinTable({ name: 'user_books' })
   user: User;
 
-  // @ManyToMany(() => Role)
-  // @JoinTable({ name: 'user_roles' })
-  // roles: Role[];
+  @ManyToMany(() => Genre)
+  @JoinTable({ name: 'book_genres' })
+  genres: Genre[];
 }

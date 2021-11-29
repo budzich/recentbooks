@@ -35,6 +35,11 @@ export class User {
   @JoinTable({ name: 'user_roles' })
   roles: Role[];
 
+  @ManyToMany(() => Book)
+  @JoinTable({ name: 'user_favorite_books' })
+  favoriteBooks: Book[];
+
   @OneToMany(() => Book, book => book.user)
+  @JoinTable({ name: 'user_books' })
   books: Book[];
 }
