@@ -9,6 +9,8 @@ import { BooksModule } from './books/books.module';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { GenresModule } from './genres/genres.module';
+import { RedisCacheModule } from './redis-cache/redis-cache.module';
+import { TasksModule } from './tasks/tasks.module';
 import * as path from 'path';
 
 console.log(process.env.NODE_ENV);
@@ -38,6 +40,8 @@ console.log(process.env.NODE_ENV);
     BooksModule,
     FilesModule,
     GenresModule,
+    RedisCacheModule,
+    TasksModule,
   ],
 })
 export class AppModule {}

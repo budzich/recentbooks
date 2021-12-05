@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateBookDto } from 'src/books/dto/create-book.dto';
 import { BooksService } from 'src/books/books.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -8,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { GetBooksDto } from 'src/books/dto/get-books.dto';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
+import { GetBookDto } from 'src/books/dto/get-book.dto';
 
 @Controller('books')
 export class BooksController {
@@ -27,6 +39,14 @@ export class BooksController {
   }
 
   @ApiOperation({ summary: 'Book receiving' })
+  @ApiResponse({ status: 200, type: Book })
+  @Get('/:value')
+  getBook(@Param() dto: GetBookDto,
+          @Req() req) {
+    return this.booksService.getBook(dto, req.ip);
+  }
+
+  @ApiOperation({ summary: 'Books receiving' })
   @ApiResponse({ status: 200, type: [Book] })
   @Get()
   getBooks(@Query() dto: GetBooksDto) {

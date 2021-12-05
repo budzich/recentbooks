@@ -40,6 +40,5 @@ export class User {
   favoriteBooks: Book[];
 
   @OneToMany(() => Book, book => book.user)
-  @JoinTable({ name: 'user_books' })
   books: Book[];
 }

@@ -5,13 +5,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FilesService } from 'src/files/files.service';
 import { GetBooksDto } from 'src/books/dto/get-books.dto';
+import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
+import { GetBookDto } from 'src/books/dto/get-book.dto';
 
 @Injectable()
 export class BooksService {
   constructor(@InjectRepository(Book) private bookRepository: Repository<Book>,
               @InjectRepository(User) private usersRepo: Repository<User>,
               @InjectRepository(Genre) private genresRepo: Repository<Genre>,
-              private filesService: FilesService) {}
+              private filesService: FilesService,
+              private cacheService: RedisCacheService) {}
 
   async create(dto: CreateBookDto, image, user) {
     if (!image) {
@@ -23,6 +26,16 @@ export class BooksService {
     const bookGenres = genres.filter(genre => dto.genres.includes((genre.id).toString()));
     const book = this.bookRepository.create({ ...dto, genres: bookGenres, user: fullUser, image: fileName });
     return this.bookRepository.save(book);
+  }
+
+  async getBook({ value }: GetBookDto, ip: string) {
+    const id = +value;
+    const book = await this.bookRepository.findOne({ where: { id }, relations: ['views'] });
+    if (!book) {
+      return new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+    await this.saveView(id, ip);
+    return book;
   }
 
   async getBooks(dto: GetBooksDto) {
@@ -39,5 +52,13 @@ export class BooksService {
     }
 
     return books;
+  }
+
+  async saveView(id: number, ip: string) {
+    const views: IBookView[] = await this.cacheService.get('booksViews') || [];
+    if (views.some(el => el.id === id && el.ip === ip)) {
+      return;
+    }
+    await this.cacheService.set('booksViews', [...views, { id, ip }]);
   }
 }

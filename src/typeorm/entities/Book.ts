@@ -3,11 +3,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
-  JoinTable, ManyToOne,
+  JoinTable, ManyToOne, OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/typeorm/entities/User';
 import { Genre } from 'src/typeorm/entities/Genre';
+import { BookViews } from 'src/typeorm/entities/BookViews';
 
 @Entity('books')
 export class Book {
@@ -28,10 +29,12 @@ export class Book {
   image: string;
 
   @ManyToOne(() => User, user => user.books)
-  @JoinTable({ name: 'user_books' })
   user: User;
 
   @ManyToMany(() => Genre)
   @JoinTable({ name: 'book_genres' })
   genres: Genre[];
+
+  @OneToMany(() => BookViews, bookViews => bookViews.book)
+  views: BookViews[];
 }
