@@ -17,8 +17,6 @@ import { Book } from 'src/typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetBooksDto } from 'src/books/dto/get-books.dto';
-import { Roles } from 'src/auth/roles-auth.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { GetBookDto } from 'src/books/dto/get-book.dto';
 
 @Controller('books')
@@ -28,8 +26,6 @@ export class BooksController {
   @ApiOperation({ summary: 'Book creation' })
   @ApiResponse({ status: 200, type: Book })
   @UseGuards(JwtAuthGuard)
-  @Roles('ADMIN')
-  @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('image', {}))
   @Post()
   createBook(@Body() dto: CreateBookDto,

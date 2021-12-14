@@ -32,7 +32,7 @@ export class UsersService {
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.userRepo.findOne({ where: { email }, relations: ['roles'] });
+    const user = await this.userRepo.findOne({ where: { email } });
     return user;
   }
 

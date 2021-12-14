@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString, Length } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({ example: 'For Whom the Bell Tolls', description: 'Book title' })
@@ -7,6 +7,7 @@ export class CreateBookDto {
   @Length(3, 256, { message: 'Length must contain 3-256 symbols' })
   readonly title: string;
   @ApiProperty({ example: 'Once upon...', description: 'Book description' })
+  @IsNotEmpty()
   @IsString({ message: 'Must be a string' })
   readonly description: string;
   @ApiProperty({ example: '[2, 5]', description: 'Book genres' })
