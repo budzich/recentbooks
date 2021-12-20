@@ -21,7 +21,7 @@ async function start() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3001', 'http://localhost:3000'],
     methods: 'GET, PUT, POST, DELETE',
     allowedHeaders: 'Content-Type, Authorization',
   });
