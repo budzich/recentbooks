@@ -19,6 +19,12 @@ async function start() {
   SwaggerModule.setup('/api/docs', app, document);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET, PUT, POST, DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
 
   await app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 }
