@@ -3,7 +3,7 @@ import { GenresService } from 'src/genres/genres.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Book } from 'src/typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles-auth.decorator';
+import { Roles } from 'src/auth/decorators/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateGenreDto } from 'src/genres/dto/create-genre.dto';
 

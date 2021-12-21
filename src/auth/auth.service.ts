@@ -3,24 +3,26 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { RegisterDto } from 'src/auth/dto/register.dto';
+import { LoginDto } from 'src/auth/dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private userService: UsersService,
               private jwtService: JwtService) {}
 
-  async login(userDto: CreateUserDto) {
+  async login(userDto: LoginDto) {
     const user = await this.validateUser(userDto);
     return this.generateToken(user);
   }
 
-  async register(userDto: CreateUserDto) {
-    const potentialUser = await this.userService.getUserByEmail(userDto.email);
+  async register({ email, password }: RegisterDto) {
+    const potentialUser = await this.userService.getUserByEmail(email);
     if (potentialUser) {
       throw new HttpException('This user has already exists', HttpStatus.BAD_REQUEST);
     }
-    const hashPassword = await bcrypt.hash(userDto.password, 5);
-    const user = await this.userService.createUser({ ...userDto, password: hashPassword });
+    const hashPassword = await bcrypt.hash(password, 5);
+    const user = await this.userService.createUser({ email, password: hashPassword });
     return this.generateToken(user);
   }
 
