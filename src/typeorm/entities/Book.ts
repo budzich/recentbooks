@@ -3,7 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
-  JoinTable, ManyToOne, OneToMany,
+  JoinTable, ManyToOne, OneToMany, CreateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/typeorm/entities/User';
@@ -30,6 +30,9 @@ export class Book {
 
   @ManyToOne(() => User, user => user.books)
   user: User;
+
+  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  public created_at: Date;
 
   @ManyToMany(() => Genre)
   @JoinTable({ name: 'book_genres' })

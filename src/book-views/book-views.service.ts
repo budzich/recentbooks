@@ -20,7 +20,7 @@ export class BookViewsService {
       where: {
         created_at: MoreThan(period),
       },
-      relations: ['book'],
+      relations: ['book', 'book.genres'],
     });
     const map = new Map;
     views.forEach(({ book }) => map.set(book.id, (map.get(book.id) || 0) + 1));
@@ -36,7 +36,7 @@ export class BookViewsService {
 
   async getPopularBooks({ period }: GetPopularBooksDto) {
     const date = new Date();
-    date.setMinutes(date.getMinutes() - +period);
+    date.setDate(date.getDate() - +period);
     const books = await this.calculateTopViews(date);
     return books;
   }

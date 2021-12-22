@@ -8,7 +8,7 @@ export class TasksService {
   constructor(private cacheService: RedisCacheService,
               private viewsService: BookViewsService) {}
 
-  @Cron('6 * * * * *')
+  @Cron('2 3 5 * * *')
   async handleSaveBooksViews() {
     const views = await this.cacheService.get('booksViews') || [];
     await this.viewsService.saveBooksViews(views);

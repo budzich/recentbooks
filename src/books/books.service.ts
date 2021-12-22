@@ -9,6 +9,7 @@ import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 import { GetBookDto } from 'src/books/dto/get-book.dto';
 import { GenresService } from 'src/genres/genres.service';
 import { UsersService } from 'src/users/users.service';
+import { LATEST_SORT, OLDEST_SORT } from 'src/books/constants';
 
 @Injectable()
 export class BooksService {
@@ -32,13 +33,25 @@ export class BooksService {
 
   async getBook({ value }: GetBookDto, ip: string) {
     const id = +value;
-    const book = await this.bookRepository.findOne({ where: { id }, relations: ['views'] });
+    const book = await this.bookRepository.findOne({ where: { id }, relations: ['views', 'genres'] });
     if (!book) {
       return new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     await this.saveView(id, ip);
     return book;
   }
+
+  // todo Create type with all sort variants
+  getOrder: any = (sortType: string) => {
+    switch (sortType) {
+      case LATEST_SORT:
+        return { created_at: 'DESC' };
+      case OLDEST_SORT:
+        return { created_at: 'ASC' };
+      default:
+        return {};
+    }
+  };
 
   async getBooks(dto: GetBooksDto) {
     const skip = dto.page ? (+dto.page - 1) * 10 : 0;
@@ -47,6 +60,7 @@ export class BooksService {
       skip,
       take: 10,
       relations: ['genres'],
+      order: this.getOrder(dto.sort),
     });
 
     if (!books.length) {
