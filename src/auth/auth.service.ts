@@ -37,7 +37,7 @@ export class AuthService {
     const fullUser = await this.userService.getUserWithPassword(email);
 
     if (!fullUser) {
-      throw new UnauthorizedException({ message: 'The user not found' });
+      throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
 
     const { password: userPassword, ...user } = fullUser;

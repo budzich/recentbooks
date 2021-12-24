@@ -39,7 +39,7 @@ services:
     ports:
       - "5000:5000"
       - "9229:9229"
-    command: yarn run start
+    command: yarn run start:dev
     depends_on:
       - postgres
       - redis

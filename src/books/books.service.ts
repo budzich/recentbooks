@@ -26,8 +26,18 @@ export class BooksService {
     const fileName = await this.filesService.createFile(image);
     const fullUser = await this.usersService.getUserByEmail(user.email);
     const genres = await this.genresService.getGenres();
-    const bookGenres = dto.genres.map(genre => genres.find(el => el.id === +genre));
-    const book = this.bookRepository.create({ ...dto, genres: bookGenres, user: fullUser, image: fileName });
+    const bookGenres = dto.genres
+      .map(genre => genres.find(el => el.id === +genre))
+      .filter(genre => genre);
+    if (!bookGenres.length) {
+      throw new HttpException('Valid genres are required', HttpStatus.BAD_REQUEST);
+    }
+    const book = this.bookRepository.create({
+      ...dto,
+      genres: bookGenres,
+      user: fullUser,
+      image: fileName,
+    });
     return this.bookRepository.save(book);
   }
 
@@ -55,18 +65,12 @@ export class BooksService {
 
   async getBooks(dto: GetBooksDto) {
     const skip = dto.page ? (+dto.page - 1) * 10 : 0;
-
     const books = await this.bookRepository.find({
       skip,
       take: 10,
       relations: ['genres'],
       order: this.getOrder(dto.sort),
     });
-
-    if (!books.length) {
-      throw new HttpException('Not found', HttpStatus.BAD_REQUEST);
-    }
-
     return books;
   }
 
