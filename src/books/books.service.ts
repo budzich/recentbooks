@@ -33,7 +33,7 @@ export class BooksService {
 
   async getBook({ value }: GetBookDto, ip: string) {
     const id = +value;
-    const book = await this.bookRepository.findOne({ where: { id }, relations: ['views', 'genres'] });
+    const book = await this.bookRepository.findOne({ where: { id }, relations: ['user', 'genres'] });
     if (!book) {
       return new HttpException('Not found', HttpStatus.NOT_FOUND);
     }

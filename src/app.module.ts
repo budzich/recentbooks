@@ -19,7 +19,7 @@ console.log(process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
@@ -27,11 +27,11 @@ console.log(process.env.NODE_ENV);
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.MYSQL_DB_HOST,
-      port: Number.parseInt(process.env.MYSQL_DB_PORT) || 5432,
-      username: process.env.MYSQL_DB_USER,
-      password: process.env.MYSQL_DB_PASS,
-      database: process.env.MYSQL_DB_NAME,
+      host: process.env.POSTGRES_HOST,
+      port: Number.parseInt(process.env.POSTGRES_PORT) || 5432,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_NAME,
       entities,
       synchronize: true,
     }),
