@@ -26,8 +26,8 @@ export class BooksService {
     const fileName = await this.filesService.createFile(image);
     const fullUser = await this.usersService.getUserByEmail(user.email);
     const genres = await this.genresService.getGenres();
-    const bookGenres = dto.genres
-      .map(genre => genres.find(el => el.id === +genre))
+    const bookGenres = JSON.parse(dto.genres)
+      .map(genre => genres.find(el => el.id === genre))
       .filter(genre => genre);
     if (!bookGenres.length) {
       throw new HttpException('Valid genres are required', HttpStatus.BAD_REQUEST);
