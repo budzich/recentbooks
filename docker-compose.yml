@@ -13,6 +13,25 @@ services:
     ports:
       - "5432:5432"
     restart: always
+  pgbackups:
+    container_name: backup
+    image: prodrigestivill/postgres-backup-local
+    restart: always
+    env_file:
+      - .env.development
+    volumes:
+      - ./backup:/backups
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_EXTRA_OPTS=-Z9 --schema=public --blobs
+      - SCHEDULE=@every 1h00m00s
+      - BACKUP_KEEP_DAYS=7
+      - BACKUP_KEEP_WEEKS=4
+      - BACKUP_KEEP_MONTHS=6
+      - HEALTHCHECK_PORT=81
   redis:
     container_name: redis
     image: "redis:latest"
