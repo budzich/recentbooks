@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    env_file:
+      - .env.development
+    image: "postgres:latest"
+    environment:
+      PG_DATA: /var/lib/postgres/data
+    volumes:
+      - /var/lib/postgres/data
+    ports:
+      - "5432:5432"
+    restart: always
+  redis:
+    container_name: redis
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    logging:
+      driver: none
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+  main:
+    container_name: main
+    build:
+      context: .
+    env_file:
+      - .env.development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "5000:5000"
+      - "9229:9229"
+    command: yarn run start:dev
+    depends_on:
+      - postgres
+      - redis
+    restart: always
