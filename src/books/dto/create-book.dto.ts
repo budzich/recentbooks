@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, Length } from 'class-validator';
 export class CreateBookDto {
   @ApiProperty({ example: 'For Whom the Bell Tolls', description: 'Book title' })
   @IsString({ message: 'Must be a string' })
-  @Length(3, 256, { message: 'Length must contain 3-256 symbols' })
+  @Length(3, 60, { message: 'Length must contain 3-60 symbols' })
   readonly title: string;
   @ApiProperty({ example: 'Once upon...', description: 'Book description' })
   @IsNotEmpty()

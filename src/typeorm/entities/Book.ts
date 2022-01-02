@@ -1,18 +1,22 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Entity,
+  JoinTable,
   ManyToMany,
-  JoinTable, ManyToOne, OneToMany, CreateDateColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/typeorm/entities/User';
 import { Genre } from 'src/typeorm/entities/Genre';
 import { BookViews } from 'src/typeorm/entities/BookViews';
+import { BOOK_AUTHOR_RELATION, BOOK_GENRES_RELATION, BOOK_VIEWS_RELATION } from 'src/helpers/relations';
 
 @Entity('books')
 export class Book {
-  @ApiProperty({ example: '1', description: 'Book id' })
+  @ApiProperty({ example: 1, description: 'Book id' })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,16 +32,17 @@ export class Book {
   @Column({ default: false })
   image: string;
 
-  @ManyToOne(() => User, user => user.books)
-  user: User;
-
-  @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+  @ApiProperty({ example: '(TIMESTAMP)', description: 'Creation date' })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   public created_at: Date;
+
+  @ManyToOne(() => User, user => user.books)
+  [BOOK_AUTHOR_RELATION]: User;
 
   @ManyToMany(() => Genre)
   @JoinTable({ name: 'book_genres' })
-  genres: Genre[];
+  [BOOK_GENRES_RELATION]: Genre[];
 
   @OneToMany(() => BookViews, bookViews => bookViews.book)
-  views: BookViews[];
+  [BOOK_VIEWS_RELATION]: BookViews[];
 }

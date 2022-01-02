@@ -35,18 +35,14 @@ export class AuthService {
 
   private async validateUser({ password, email }: CreateUserDto) {
     const fullUser = await this.userService.getUserWithPassword(email);
-
     if (!fullUser) {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
-
     const { password: userPassword, ...user } = fullUser;
     const isValid = await bcrypt.compare(password, userPassword);
-
     if (user && isValid) {
       return user;
     }
-
     throw new UnauthorizedException({ message: 'Invalid credentials' });
   }
 }

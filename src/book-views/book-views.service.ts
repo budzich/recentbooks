@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { BookViews } from 'src/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import { GetPopularBooksDto } from 'src/book-views/dto/get-books.dto';
+import { BOOK_GENRES_RELATION, VIEW_BOOK_RELATION } from 'src/helpers/relations';
 
 @Injectable()
 export class BookViewsService {
@@ -20,7 +21,7 @@ export class BookViewsService {
       where: {
         created_at: MoreThan(period),
       },
-      relations: ['book', 'book.genres'],
+      relations: [VIEW_BOOK_RELATION, `${VIEW_BOOK_RELATION}.${BOOK_GENRES_RELATION}`],
     });
     const map = new Map;
     views.forEach(({ book }) => map.set(book.id, (map.get(book.id) || 0) + 1));

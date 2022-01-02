@@ -2,14 +2,17 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Book } from 'src/typeorm';
 import { CreateBookDto } from 'src/books/dto/create-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { FilesService } from 'src/files/files.service';
 import { GetBooksDto } from 'src/books/dto/get-books.dto';
 import { RedisCacheService } from 'src/redis-cache/redis-cache.service';
 import { GetBookDto } from 'src/books/dto/get-book.dto';
 import { GenresService } from 'src/genres/genres.service';
 import { UsersService } from 'src/users/users.service';
-import { LATEST_SORT, OLDEST_SORT } from 'src/books/constants';
+import { BOOKS_PER_PAGE, LATEST_SORT, OLDEST_SORT } from 'src/books/constants';
+import { SearchBooksDto } from 'src/books/dto/search-books.dto';
+import { BOOK_AUTHOR_RELATION, BOOK_GENRES_RELATION } from 'src/helpers/relations';
+import { BOOK_VIEWS_CACHE } from 'src/helpers/cache';
 
 @Injectable()
 export class BooksService {
@@ -43,7 +46,10 @@ export class BooksService {
 
   async getBook({ value }: GetBookDto, ip: string) {
     const id = +value;
-    const book = await this.bookRepository.findOne({ where: { id }, relations: ['user', 'genres'] });
+    const book = await this.bookRepository.findOne({
+      where: { id },
+      relations: [BOOK_AUTHOR_RELATION, BOOK_GENRES_RELATION],
+    });
     if (!book) {
       return new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
@@ -64,21 +70,33 @@ export class BooksService {
   };
 
   async getBooks(dto: GetBooksDto) {
-    const skip = dto.page ? (+dto.page - 1) * 10 : 0;
+    const skip = dto.page ? (+dto.page - 1) * BOOKS_PER_PAGE : 0;
     const books = await this.bookRepository.find({
       skip,
-      take: 10,
-      relations: ['genres'],
+      take: BOOKS_PER_PAGE,
+      relations: [BOOK_GENRES_RELATION],
       order: this.getOrder(dto.sort),
     });
     return books;
   }
 
+  async searchBooks({ search }: SearchBooksDto) {
+    const books = await this.bookRepository.find({
+      skip: 0,
+      take: BOOKS_PER_PAGE,
+      where: {
+        title: ILike(`%${search}%`),
+      },
+    });
+
+    return books;
+  }
+
   async saveView(id: number, ip: string) {
-    const views: IBookView[] = await this.cacheService.get('booksViews') || [];
+    const views: IBookView[] = await this.cacheService.get(BOOK_VIEWS_CACHE) || [];
     if (views.some(el => el.id === id && el.ip === ip)) {
       return;
     }
-    await this.cacheService.set('booksViews', [...views, { id, ip }]);
+    await this.cacheService.set(BOOK_VIEWS_CACHE, [...views, { id, ip }]);
   }
 }

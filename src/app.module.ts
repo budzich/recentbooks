@@ -14,8 +14,6 @@ import { TasksModule } from './tasks/tasks.module';
 import { BookViewsModule } from './book-views/book-views.module';
 import * as path from 'path';
 
-console.log(process.env.NODE_ENV);
-
 @Module({
   imports: [
     ConfigModule.forRoot({

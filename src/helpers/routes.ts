@@ -1,0 +1,12 @@
+export const GLOBAL_PREFIX = '/api';
+export const SWAGGER_ROUTE = '/api/docs';
+export const USERS_ROUTE = '/users';
+export const USER_ROLES_ROUTE = '/role';
+export const USER_BAN_ROUTE = '/ban';
+export const ROLES_ROUTE = '/roles';
+export const GET_ROLE_ROUTE = '/:value';
+export const GENRES_ROUTE = '/genres';
+export const BOOKS_ROUTE = '/books';
+export const BOOKS_SEARCH_ROUTE = '/find';
+export const GET_BOOK_ROUTE = '/book/:value';
+export const POPULAR_BOOKS_ROUTE = '/popular';

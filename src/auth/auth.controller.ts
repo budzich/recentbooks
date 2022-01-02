@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
 import { RegisterDto } from 'src/auth/dto/register.dto';
 import { LoginDto } from 'src/auth/dto/login.dto';
+import { TokenDto } from 'src/auth/dto/token.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -10,7 +11,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @ApiOperation({ summary: 'User login' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 200, type: TokenDto })
   @Post('/login')
   @HttpCode(200)
   login(@Body() userDto: LoginDto) {
@@ -18,7 +19,7 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'User registration' })
-  @ApiResponse({ status: 201 })
+  @ApiResponse({ status: 201, type: TokenDto })
   @Post('register')
   registration(@Body() userDto: RegisterDto) {
     return this.authService.register(userDto);
