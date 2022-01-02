@@ -10,3 +10,5 @@ export const BOOKS_ROUTE = '/books';
 export const BOOKS_SEARCH_ROUTE = '/find';
 export const GET_BOOK_ROUTE = '/book/:value';
 export const POPULAR_BOOKS_ROUTE = '/popular';
+export const REGISTER_ROUTE = '/register';
+export const LOGIN_ROUTE = '/login';

@@ -4,6 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { RegisterDto } from 'src/auth/dto/register.dto';
 import { LoginDto } from 'src/auth/dto/login.dto';
 import { TokenDto } from 'src/auth/dto/token.dto';
+import { LOGIN_ROUTE, REGISTER_ROUTE } from 'src/helpers/routes';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -12,7 +13,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({ status: 200, type: TokenDto })
-  @Post('/login')
+  @Post(LOGIN_ROUTE)
   @HttpCode(200)
   login(@Body() userDto: LoginDto) {
     return this.authService.login(userDto);
@@ -20,7 +21,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'User registration' })
   @ApiResponse({ status: 201, type: TokenDto })
-  @Post('register')
+  @Post(REGISTER_ROUTE)
   registration(@Body() userDto: RegisterDto) {
     return this.authService.register(userDto);
   }
