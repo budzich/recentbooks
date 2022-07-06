@@ -12,7 +12,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/typeorm/entities/User';
 import { Genre } from 'src/typeorm/entities/Genre';
 import { BookViews } from 'src/typeorm/entities/BookViews';
-import { BOOK_AUTHOR_RELATION, BOOK_GENRES_RELATION, BOOK_VIEWS_RELATION } from 'src/helpers/relations';
+import {
+  BOOK_AUTHOR_RELATION,
+  BOOK_COMMENTS_RELATION,
+  BOOK_GENRES_RELATION,
+  BOOK_VIEWS_RELATION,
+} from 'src/helpers/relations';
+import { Comment } from 'src/typeorm/entities/Comment';
 
 @Entity('books')
 export class Book {
@@ -45,4 +51,7 @@ export class Book {
 
   @OneToMany(() => BookViews, bookViews => bookViews.book)
   [BOOK_VIEWS_RELATION]: BookViews[];
+
+  @OneToMany(() => Comment, comment => comment.book)
+  [BOOK_COMMENTS_RELATION]: Comment[];
 }

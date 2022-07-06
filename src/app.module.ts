@@ -12,6 +12,7 @@ import { GenresModule } from './genres/genres.module';
 import { RedisCacheModule } from './redis-cache/redis-cache.module';
 import { TasksModule } from './tasks/tasks.module';
 import { BookViewsModule } from './book-views/book-views.module';
+import { CommentsModule } from './comments/comments.module';
 import * as path from 'path';
 
 @Module({
@@ -42,6 +43,7 @@ import * as path from 'path';
     RedisCacheModule,
     TasksModule,
     BookViewsModule,
+    CommentsModule,
   ],
 })
 export class AppModule {}

@@ -2,7 +2,13 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColum
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/typeorm/entities/Role';
 import { Book } from 'src/typeorm/entities/Book';
-import { USER_BOOKS_RELATION, USER_FAVORITE_BOOKS_RELATION, USER_ROLES_RELATION } from 'src/helpers/relations';
+import {
+  USER_BOOKS_RELATION,
+  USER_COMMENTS_RELATION,
+  USER_FAVORITE_BOOKS_RELATION,
+  USER_ROLES_RELATION,
+} from 'src/helpers/relations';
+import { Comment } from 'src/typeorm/entities/Comment';
 
 @Entity('users')
 export class User {
@@ -36,4 +42,7 @@ export class User {
 
   @OneToMany(() => Book, book => book.user)
   [USER_BOOKS_RELATION]: Book[];
+
+  @OneToMany(() => Comment, comment => comment.user)
+  [USER_COMMENTS_RELATION]: Comment[];
 }
