@@ -11,7 +11,7 @@ import { GenresService } from 'src/genres/genres.service';
 import { UsersService } from 'src/users/users.service';
 import { BOOKS_PER_PAGE, LATEST_SORT, OLDEST_SORT } from 'src/books/constants';
 import { SearchBooksDto } from 'src/books/dto/search-books.dto';
-import { BOOK_AUTHOR_RELATION, BOOK_GENRES_RELATION } from 'src/helpers/relations';
+import { BOOK_AUTHOR_RELATION, BOOK_COMMENTS_RELATION, BOOK_GENRES_RELATION } from 'src/helpers/relations';
 import { BOOK_VIEWS_CACHE } from 'src/helpers/cache';
 
 @Injectable()
@@ -74,7 +74,7 @@ export class BooksService {
     const books = await this.bookRepository.find({
       skip,
       take: BOOKS_PER_PAGE,
-      relations: [BOOK_GENRES_RELATION],
+      relations: [BOOK_GENRES_RELATION, BOOK_COMMENTS_RELATION],
       order: this.getOrder(dto.sort),
     });
     return books;
